@@ -7,6 +7,10 @@ float playerPosX = 0.0;
 float playerPosY = 0.0;
 float playerVelX = 0.0;
 float playerVelY = 0.0;
+boolean UP_ARROW = false;
+boolean DOWN_ARROW = false;
+boolean LEFT_ARROW = false;
+boolean RIGHT_ARROW = false;
 void settings() {
   size(160*2, 120*2);
   level+="................................................................";
@@ -28,6 +32,59 @@ void settings() {
   level+="................................................................";
 }
 void draw() {
+  //playerVelX = 0.0;
+  //playerVelY = 0.0;
+  if (UP_ARROW) {
+    playerVelY = -.6;
+  }  
+  if (DOWN_ARROW) {
+    playerVelY = .1;
+  }  
+  if (LEFT_ARROW) {
+    playerVelX += -.1;
+  }  
+  if (RIGHT_ARROW) {
+    playerVelX += .1;
+  }
+  playerVelY += .2;
+  float newPlayerPosX = playerPosX + playerVelX;
+  float newPlayerPosY = playerPosY + playerVelY;
+  if(playerVelX>.3)
+  playerVelX=.3;
+  if(playerVelX<-.3)
+  playerVelX=-.3;
+  if(playerVelY>.75)
+  playerVelY=.75;
+  if(playerVelY<-.75)
+  playerVelY=-.75;
+  //collision
+
+  if (playerVelX<=0) {
+    if (GetTile(newPlayerPosX, playerPosY)!='.'||GetTile(newPlayerPosX, playerPosY+.99)!='.') {
+      newPlayerPosX = int(newPlayerPosX) + 1;
+      playerVelX = 0;
+    }
+  } else {
+    if (GetTile(newPlayerPosX+1, playerPosY)!='.'||GetTile(newPlayerPosX+1, playerPosY+.99)!='.') {
+      newPlayerPosX = int(newPlayerPosX);
+      playerVelX = 0;
+    }
+  }
+  if (playerVelY<=0) {
+    if (GetTile(newPlayerPosX, newPlayerPosY)!='.'||GetTile(newPlayerPosX+.99, newPlayerPosY)!='.') {
+      newPlayerPosY = int(newPlayerPosY) + 1;
+      playerVelY = 0;
+    }
+  }else{
+    if (GetTile(newPlayerPosX, newPlayerPosY+1)!='.'||GetTile(newPlayerPosX+.99, newPlayerPosY+1)!='.') {
+      newPlayerPosY = int(newPlayerPosY);
+      playerVelY = 0;
+    }
+  }
+  playerPosX = newPlayerPosX;
+  playerPosY = newPlayerPosY;
+
+
   cameraPosX = playerPosX;
   cameraPosY = playerPosY;
   background(0);
@@ -35,7 +92,7 @@ void draw() {
   noStroke();
   int tileWidth = 16;
   int tileHeight = 16;
-  rect(0, 0, tileWidth*4, tileHeight);
+  rect(0, 0, width, height);
   int visibleTilesX = width/tileWidth;
   int visibleTilesY = height/tileHeight;
   float offsetX = cameraPosX - float(visibleTilesX) / 2.0;
@@ -44,28 +101,32 @@ void draw() {
   if (offsetY<0) offsetY = 0;
   if (offsetX>levelWidth-visibleTilesX) offsetX = levelWidth-visibleTilesX;
   if (offsetY>levelHeight-visibleTilesY) offsetY = levelHeight-visibleTilesY;
-  for (int x = 0; x < visibleTilesX; x++) {
-    for (int y = -1; y < visibleTilesY; y++) {
-      char tileID = GetTile(x, y);
+  float tileOffsetX = (offsetX - int(offsetX)) * tileWidth;
+  float tileOffsetY = (offsetY - int(offsetY)) * tileHeight;
+  for (int x = -1; x < visibleTilesX+1; x++) {
+    for (int y = -1; y < visibleTilesY+1; y++) {
+      char tileID = GetTile(x + offsetX, y + offsetY);
       switch(tileID) {
       case '.':
         fill(0, 255, 255);
-        rect(x*tileWidth, y*tileHeight, tileWidth, tileHeight);
+        rect(x*tileWidth-tileOffsetX, y*tileHeight-tileOffsetY, tileWidth+tileOffsetX, tileHeight+tileOffsetY);
         break;
       case '#':
         fill(255, 0, 0);
-        rect(x*tileWidth, y*tileHeight, tileWidth, tileHeight);
+        rect(x*tileWidth-tileOffsetX, y*tileHeight-tileOffsetY, tileWidth+tileOffsetX, tileHeight+tileOffsetY);
         break;
       default:
         break;
       }
     }
   }
+  fill(0, 255, 0);
+  rect((playerPosX - offsetX)*tileWidth, (playerPosY - offsetY)*tileHeight, tileWidth, tileHeight);
 }
 
-char GetTile(int x, int y) {
+char GetTile(float x, float y) {
   if (x >= 0 && x < levelWidth && y >= 0 && y < levelHeight) {
-    return level.charAt(y * levelWidth + x);
+    return level.charAt(int(y) * levelWidth + int(x));
   } else {
     return ' ';
   }
@@ -82,5 +143,37 @@ void SetTile(int x, int y, char c) {
       }
     }
     level = temp;
+  }
+}
+void keyPressed() {
+  switch(keyCode) {
+  case UP:
+    UP_ARROW=true;
+    break;
+  case DOWN:
+    DOWN_ARROW=true;
+    break;
+  case LEFT:
+    LEFT_ARROW=true;
+    break;
+  case RIGHT:
+    RIGHT_ARROW=true;
+    break;
+  }
+}
+void keyReleased() {
+  switch(keyCode) {
+  case UP:
+    UP_ARROW=false;
+    break;
+  case DOWN:
+    DOWN_ARROW=false;
+    break;
+  case LEFT:
+    LEFT_ARROW=false;
+    break;
+  case RIGHT:
+    RIGHT_ARROW=false;
+    break;
   }
 }
