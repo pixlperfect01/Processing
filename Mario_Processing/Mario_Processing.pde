@@ -144,7 +144,7 @@ void setup() {
 }
 void draw() {
   //frameRate(1);
-  if(!Alive){
+  if (!Alive) {
     exit();
   }
   playerOnGround = false;
@@ -167,10 +167,12 @@ void draw() {
   float newPlayerPosX = playerPosX + playerVelX;
   float newPlayerPosY = playerPosY + playerVelY;
 
-  if (GetTile(newPlayerPosX, newPlayerPosY)=='o'||GetTile(newPlayerPosX+.99, newPlayerPosY-.1)=='o') {
-    SetTile(newPlayerPosX, newPlayerPosY, '.');
-    coins++;
-  }
+    if (GetTile(newPlayerPosX, newPlayerPosY)=='o') {
+      SetTile(newPlayerPosX, newPlayerPosY, '.');
+    }
+    if (GetTile(newPlayerPosX+.999, newPlayerPosY-.1)=='o') {
+      SetTile(newPlayerPosX+.999, newPlayerPosY-.1, '.');
+    }
   if (playerVelX>.3)
     playerVelX=.3;
   if (playerVelX<-.3)
@@ -273,12 +275,16 @@ void draw() {
       }
     }
   }
-  for (int i=Goombas.size()-1;i>=0;i--) {
-    if(!Goombas.get(i).alive){
-      Goombas.remove(i);
-    }
+  for (int i=0; i<Goombas.size(); i++) {
+    Goomba g = Goombas.get(i);
+      //g.alive = false;
+  }
+  for (int i=Goombas.size()-1; i>=0; i--) {
     Goombas.get(i).move();
     Goombas.get(i).show();
+    if (!Goombas.get(i).alive) {
+      Goombas.remove(i);
+    }
   }
   if (wC % 6 == 1) {
     wM=!wM;
@@ -388,3 +394,4 @@ PImage reverse(PImage a) {
   img.updatePixels();
   return img;
 }
+
