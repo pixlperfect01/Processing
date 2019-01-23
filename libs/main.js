@@ -2,7 +2,7 @@ var width,height,frameCount=0;
 function size(w, h){
   width=w;
   height=h;
-  document.innerHTML+="<canvas id=\"pCanvas\" width=\""+w+"\" height=\""+h+"\"></canvas>
+  document.innerHTML+="<canvas id=\"pCanvas\" width=\""+w+"\" height=\""+h+"\"></canvas>";
   var c=document.getElementById("pCanvas");
   c.style.width=w;
   c.style.height=h;
