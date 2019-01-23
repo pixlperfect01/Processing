@@ -11,7 +11,7 @@ function size(w, h){
 function fullScreen(){
   var w = window.innerWidth;
   var h = window.innerHeight;
-  document.innerHTML+="<canvas id=\"pCanvas\" width=\""+w+"\" height=\""+h+"\"></canvas>
+  document.innerHTML+="<canvas id=\"pCanvas\" width=\""+w+"\" height=\""+h+"\"></canvas>";
   var c=document.getElementById("pCanvas");
   c.style.width=w;
   c.style.height=h;
